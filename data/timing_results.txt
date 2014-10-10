@@ -1,0 +1,33 @@
+TIMING RESULTS
+    first implementation of fast xi_i computation and Bentley-Ottmann DCEL construction (built with Qt Creator)
+    
+    circle_data_240pts_inv_density
+        bifiltration contains 9354 one-simplices and 179695 two-simplices
+ 
+        one-homology with no bins: 
+           arrangement contains 580 LCMs, 97230 vertices, 389860 halfedges, 97701 faces
+           
+           first run:
+             xi_i computation took 00:00:03.808793
+             building the arrangement took 00:00:00.173823
+           second run: 
+             xi_i computation took 00:00:03.777685
+             building the arrangement took 00:00:00.169089
+           third run: 
+             xi_i computation took 00:00:03.752561
+             building the arrangement took 00:00:00.175083
+        
+        one-dimensional homology with 20 bins in each direction:
+           arrangement contains 56 LCMs, 815 vertices, 3502 halfedges, 937 faces
+           
+           first run:
+             xi_i computation took 00:00:02.909597
+             building the arrangement took 0:00:00.001080
+             
+           second run:
+             xi_i computation took 00:00:02.956095
+             building the arrangement took 0:00:00.000976
+             
+           third run:
+             xi_i computation took 00:00:02.910195
+             building the arrangement took 0:00:00.000975
