@@ -1,0 +1,43 @@
+#sample data file to save augmented arrangement from RIVET
+
+#empty lines and lines that begin with hash symbol are ignored
+
+#this next line tells RIVET what type of file this is
+RIVET_0
+
+#the next three lines give the following parameters, one per line: homology dimension, x-label, y-label
+1
+time
+distance
+
+#a line beginning with "x" indicates that the (rational) x-grades are to follow
+# x-grades are to be sorted in increasing order
+x-grades
+1/2
+3
+175/41
+
+#a line beginning with "y" indicates that the (rational) y-grades are to follow
+# y-grades are to be sorted in increasing order
+y-grades
+-1
+0
+2/5
+2
+
+#a line beginning with "xi" indicates that the nonzero values of the multigraded Betti numbers are to follow
+# each line contains: [discrete x-coordinate] [discrete y-coordinate] [value of xi_0] [value of xi_1]
+# sorted lexicographically???
+xi
+0 1 2 0
+2 2 3 1
+2 3 0 2
+
+#a line beginning with "barcode" indicates that the barcode templates are to follow
+# each line contains one barcode template
+# each barcode template is a collection of triples, separated by white space
+# each triple is stored as [begin index],[end index],[mutliplcity]
+barcode templates
+0,1,1 0,2,1 1,2,2
+0,1,1
+
