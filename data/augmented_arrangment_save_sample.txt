@@ -37,7 +37,10 @@ xi
 # each line contains one barcode template
 # each barcode template is a collection of triples, separated by white space
 # each triple is stored as [begin index],[end index],[mutliplcity]
+# the letter 'i' shall denote infinity
+# an empty barcode template shall be represented by a hyphen '-'
 barcode templates
 0,1,1 0,2,1 1,2,2
+-
 0,1,1
 
