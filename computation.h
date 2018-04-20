@@ -67,7 +67,7 @@ public:
 };
 
 struct ComputationResult {
-    unsigned_matrix homology_dimensions;
+    UnsignedMatrix homology_dimensions;
     std::vector<TemplatePoint> template_points;
     std::shared_ptr<Arrangement> arrangement;
     //std::shared_ptr<FIRep> bifiltration;

@@ -39,15 +39,10 @@ Presentation::Presentation(FIRep& fir, Progress& progress, int verbosity)
     : mat(0,0)
     , col_ind(fir.high_mx.ind.height(),fir.high_mx.ind.width())
     , row_ind(fir.high_mx.ind.height(),fir.high_mx.ind.width())
+    , hom_dims(fir.high_mx.ind.width(),fir.high_mx.ind.height())
     , is_minimized(false)
     , is_kernel_minimal(true)
 {
-    
-    //ensure hom_dims is the correct size.
-    //NOTE: unlike the IndexMatrices, is indexed by x-coordinate first,
-    //then y-coordinate.  This discrepancy is a bit strange,
-    //but follows the exisiting convention in the code.
-    hom_dims.resize(boost::extents[fir.high_mx.ind.width()][fir.high_mx.ind.height()]);
     
     if (verbosity > 8)
     {
@@ -192,7 +187,7 @@ void Presentation::min_gens_and_clearing_data_one_bigrade(BigradedMatrix& old_hi
     int last_col=old_high.ind.get(curr_y,curr_x);
     
     if (curr_y>0)
-        hom_dims[curr_x][curr_y]=hom_dims[curr_x][curr_y-1];
+        hom_dims.set(curr_x,curr_y,hom_dims.get(curr_x,curr_y-1));
     
     //take each column with index in [first_col,last_col] to be a pivot column.
     for (int j = first_col; j <= last_col; j++) {
@@ -234,7 +229,7 @@ void Presentation::min_gens_and_clearing_data_one_bigrade(BigradedMatrix& old_hi
                 new_high.mat.append_col(mx,j);
             }
             
-            hom_dims[curr_x][curr_y]++;
+            hom_dims.set(curr_x,curr_y,hom_dims.get(curr_x,curr_y)+1);
         }
     } // reductions complete
     
@@ -476,17 +471,17 @@ void Presentation::compute_hom_dims(const IndexMatrix& ind)
     for (unsigned x = 0; x < col_ind.width(); x++)
     {
         ker_dims_prev_row[x] = ind.get(0, x)+1;
-        hom_dims[x][0]= ker_dims_prev_row[x] - hom_dims[x][0];
+        hom_dims.set(x,0,ker_dims_prev_row[x] - hom_dims.get(x,0));
     }
 
     for (unsigned y = 1; y < col_ind.height(); y++)
     {
         for (unsigned x = 0; x < col_ind.width(); x++)
         {
-            //before this line is executed, hom_dims[x][y] is equal to the
+            //before this line is executed, hom_dims.get(x,y) is equal to the
             //pointwise rank of the high matrix in the firep at (x,y)
             ker_dims_prev_row[x] = ind.get(y,x) - ker_dims_prev_row[col_ind.width()-1] + ker_dims_prev_row[x] + 1;
-            hom_dims[x][y]=ker_dims_prev_row[x] - hom_dims[x][y];
+            hom_dims.set(x,y,ker_dims_prev_row[x] - hom_dims.get(x,y));
         }
     }
 }

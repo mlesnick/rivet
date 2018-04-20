@@ -33,6 +33,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class Halfedge;
 
 #include "barcode_template.h"
+
+//The following include is needed for only the UnsignedMatrix struct.
+#include "math/presentation.h"
+
 #include <math/template_point.h>
 #include <memory>
 #include <numerics.h>
@@ -140,7 +144,7 @@ struct TemplatePointsMessage {
     std::string x_label;
     std::string y_label;
     std::vector<TemplatePoint> template_points;
-    unsigned_matrix homology_dimensions;
+    UnsignedMatrix homology_dimensions;
     std::vector<exact> x_exact;
     std::vector<exact> y_exact;
 

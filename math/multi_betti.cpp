@@ -105,10 +105,10 @@ void MultiBetti::compute_from_pres(Presentation pres, Progress& progress)
 }
 
 //computes xi_0 and xi_1, and also stores dimension of homology at each grade in the supplied matrix
-void MultiBetti::compute_koszul(FIRep& fir, unsigned_matrix& hom_dims, Progress& progress)
+void MultiBetti::compute_koszul(FIRep& fir, UnsignedMatrix& hom_dims, Progress& progress)
 {
     //ensure hom_dims is the correct size
-    hom_dims.resize(boost::extents[num_x_grades][num_y_grades]);
+    hom_dims=UnsignedMatrix(num_x_grades,num_y_grades);
 
     if (num_x_grades <= 0 || num_y_grades <= 0) {
         return;
@@ -135,7 +135,7 @@ void MultiBetti::compute_koszul(FIRep& fir, unsigned_matrix& hom_dims, Progress&
     reduce(bdry2, 0, ind2->get(0, 0), lows_bdry2, nonzero_cols_b2_y0);
     nonzero_cols_bdry2 = nonzero_cols_b2_y0;
     xi[0][0][1] += nonzero_cols_bdry2; //adding rank(bdry2_D)
-    hom_dims[0][0] -= nonzero_cols_bdry2; //subtracting rank(bdry2) at (0,0)
+    hom_dims.set(0,0,hom_dims.get(0,0) - nonzero_cols_bdry2); //subtracting rank(bdry2) at (0,0)
     if (num_x_grades > 1) {
         xi[1][0][1] -= nonzero_cols_bdry2; //subtracting dim(U)=rank(bdry2_B) at (1,0)
     }
@@ -147,7 +147,7 @@ void MultiBetti::compute_koszul(FIRep& fir, unsigned_matrix& hom_dims, Progress&
     for (unsigned y = 1; y < num_y_grades; y++) { //reduce bdry2 at (0,y) for y > 0 and record rank
         reduce(bdry2, ind2->get(y - 1, num_x_grades - 1) + 1, ind2->get(y, 0), lows_bdry2, nonzero_cols_bdry2);
         xi[0][y][1] += nonzero_cols_bdry2; //adding rank(bdry2_D)
-        hom_dims[0][y] -= nonzero_cols_bdry2; //subtracting rank(bdry2) at (0,y)
+        hom_dims.set(0,y,hom_dims.get(0,y) - nonzero_cols_bdry2); //subtracting rank(bdry2) at (0,y)
         if (y + 1 < num_y_grades)
             xi[0][y + 1][1] -= nonzero_cols_bdry2; //subtracting dim(U)=rank(bdry2_C) at (0,y+1)
         bdry2m->copy_cols_same_indexes(bdry2, ind2->get(y - 1, num_x_grades - 1) + 1, ind2->get(y, 0));
@@ -158,7 +158,7 @@ void MultiBetti::compute_koszul(FIRep& fir, unsigned_matrix& hom_dims, Progress&
         reduce(bdry2, ind2->get(0, x - 1) + 1, ind2->get(0, x), lows_bdry2, nonzero_cols_b2_y0);
         nonzero_cols_bdry2 = nonzero_cols_b2_y0;
         xi[x][0][1] += nonzero_cols_bdry2; //adding rank(bdry2_D)
-        hom_dims[x][0] -= nonzero_cols_bdry2; //subtracting rank(bdry2) at (x,0)
+        hom_dims.set(x,0,hom_dims.get(x,0) - nonzero_cols_bdry2); //subtracting rank(bdry2) at (x,0)
         if (x + 1 < num_x_grades)
             xi[x + 1][0][1] -= nonzero_cols_bdry2; //subtracting dim(U)=rank(bdry2_B) at (x+1,0)
         bdry2m->copy_cols_same_indexes(bdry2, ind2->get(0, x - 1) + 1, ind2->get(0, x));
@@ -166,7 +166,7 @@ void MultiBetti::compute_koszul(FIRep& fir, unsigned_matrix& hom_dims, Progress&
         for (unsigned y = 1; y < num_y_grades; y++) { //reduce bdry2 at (x,y) and record rank
             reduce(bdry2, ind2->get(y - 1, num_x_grades - 1) + 1, ind2->get(y, x), lows_bdry2, nonzero_cols_bdry2);
             xi[x][y][1] += nonzero_cols_bdry2; //adding rank(bdry2_D)
-            hom_dims[x][y] -= nonzero_cols_bdry2; //homology dimension at (x,y)
+            hom_dims(x,y,hom_dims.get(x,y) - nonzero_cols_bdry2); //homology dimension at (x,y)
             bdry2m->copy_cols_same_indexes(bdry2, ind2->get(y, x - 1) + 1, ind2->get(y, x));
         }
     }
@@ -232,7 +232,7 @@ void MultiBetti::compute_koszul(FIRep& fir, unsigned_matrix& hom_dims, Progress&
     if (1 < num_y_grades)
         xi[0][1][1] += zero_cols_bdry1; //adding nullity(bdry1_C)
 
-    hom_dims[0][0] += zero_cols_bdry1; //homology dimension at (0,0)
+    hom_dims.set(0,0,hom_dims.get(0,0) + zero_cols_bdry1); //homology dimension at (0,0)
 
     //reduce bdry2 and split at (0,0) and record dimension of U
     reduce_spliced(bdry2s, split, ind2s, ind1, zero_list_bdry1, 0, 0, lows_b2split, nonzero_cols_b2split);
@@ -257,7 +257,7 @@ void MultiBetti::compute_koszul(FIRep& fir, unsigned_matrix& hom_dims, Progress&
         if (y + 1 < num_y_grades)
             xi[0][y + 1][1] += zero_cols_bdry1; //adding nullity(bdry1_C)
 
-        hom_dims[0][y] += zero_cols_bdry1; //homology dimension at (0,y)
+        hom_dims.set(0,y,hom_dims.get(0,y) + zero_cols_bdry1); //homology dimension at (0,y)
 
         //reduce bdry2 and split at (0,y) and record dimension of U
         reduce_spliced(bdry2s, split, ind2s, ind1, zero_list_bdry1, 0, y, lows_b2split, nonzero_cols_b2split);
@@ -286,7 +286,7 @@ void MultiBetti::compute_koszul(FIRep& fir, unsigned_matrix& hom_dims, Progress&
         if (1 < num_y_grades)
             xi[x][1][1] += zero_cols_bdry1; //adding nullity(bdry1_C)
 
-        hom_dims[x][0] += zero_cols_bdry1; //homology dimension at (x,0)
+        hom_dims.set(x,0,hom_dims.get(x,0)+zero_cols_bdry1); //homology dimension at (x,0)
 
         //reduce bdry2 and split at (x,0) and record dimension of U
         nonzero_cols_b2split = 0;
@@ -337,32 +337,29 @@ void MultiBetti::compute_koszul(FIRep& fir, unsigned_matrix& hom_dims, Progress&
 
 //TODO: By an observation of William Wang, this can be simplified a bit.
 //computes xi_2 from the values of xi_0, xi_1 and the dimensions
-void MultiBetti::compute_xi2(unsigned_matrix& hom_dims)
+void MultiBetti::compute_xi2(UnsignedMatrix& hom_dims)
 {
-    if (hom_dims.size() == 0) {
-        std::cout << "NOOOOOOO" << std::endl;
-        return;
-    }
+    
     //calculate xi_2 at (0,0)
     int row_sum = xi[0][0][0] - xi[0][0][1];
-    xi[0][0][2] = hom_dims[0][0] - row_sum;
+    xi[0][0][2] = hom_dims.get(0,0) - row_sum;
 
     //calculate xi_2 at (x,0) for x > 0
     for (unsigned x = 1; x < num_x_grades; x++) {
         row_sum += xi[x - 1][0][2] + xi[x][0][0] - xi[x][0][1];
-        xi[x][0][2] = hom_dims[x][0] - row_sum;
+        xi[x][0][2] = hom_dims.get(x,0) - row_sum;
     }
 
     //calcuate xi_2 at (x,y) for y > 0
     for (unsigned y = 1; y < num_y_grades; y++) {
         //calculate xi_2 at (0,y)
         row_sum = xi[0][y][0] - xi[0][y][1];
-        xi[0][y][2] = hom_dims[0][y] - (hom_dims[0][y - 1] + row_sum);
+        xi[0][y][2] = hom_dims.get(0,y) - (hom_dims.get(0,y - 1) + row_sum);
 
         //calculate xi_2 at (x,y) for x > 0 and y > 0
         for (unsigned x = 1; x < num_x_grades; x++) {
             row_sum += xi[x - 1][y][2] + xi[x][y][0] - xi[x][y][1];
-            xi[x][y][2] = hom_dims[x][y] - (hom_dims[x][y - 1] + row_sum);
+            xi[x][y][2] = hom_dims.get(x,y) - (hom_dims.get(x,y - 1) + row_sum);
         }
     }
 } //end compute_xi2()

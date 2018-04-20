@@ -77,10 +77,6 @@ std::unique_ptr<ComputationResult> Computation::compute_raw(ComputationInput& in
             debug() << "COMPUTING MINIMAL PRESENTATION:";
         }
         
-        //Because the assignment operator for the unsigned_matrix class doesn't work properly,
-        //have to resize the object by hand before assignment.
-        pres.hom_dims.resize(boost::extents[input.x_exact.size()][input.y_exact.size()]);
-        
         pres = Presentation(input.rep(),progress,verbosity);
         
         if (verbosity >= 2) {
@@ -131,14 +127,11 @@ std::unique_ptr<ComputationResult> Computation::compute_raw(ComputationInput& in
         //to do this would be to also make the hom_dims a public member of
         //MultiBetti.
         
-        //NOTE: The boost matrix package actually requires to resize the matrix
-        //before assignment.
-        result->homology_dimensions.resize(boost::extents[pres.col_ind.width()][pres.col_ind.height()]);
         result->homology_dimensions = pres.hom_dims;
         
         //Now that I've copied the hom_dims matrix, I might as well make the
         //original one trivial.
-        pres.hom_dims.resize(boost::extents[0][0]);
+        pres.hom_dims = UnsignedMatrix(0,0);
         
     }
     

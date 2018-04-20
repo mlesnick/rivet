@@ -31,8 +31,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 typedef boost::multiprecision::cpp_rational exact;
 
-typedef boost::multi_array<unsigned, 2> unsigned_matrix;
-
 namespace rivet {
 namespace numeric {
     exact str_to_exact(const std::string& str);

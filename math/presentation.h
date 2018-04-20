@@ -50,8 +50,26 @@
 #include <string>
 #include <interface/progress.h>
 
-#include <boost/multi_array.hpp>
-typedef boost::multi_array<unsigned, 2> unsigned_matrix;
+/* stores a dense matrix of unsigned ints.
+   NOTE: Unlike the IndexMatrices, indexing convention is (x_index,y_index).
+   This discrepancy is a bit strange, but follows an earlier convention in the
+   code.*/
+struct UnsignedMatrix {
+    
+    std::vector<std::vector<unsigned>> mat;
+    
+    unsigned get(unsigned i,unsigned j) {
+        return mat[i][j];
+    }
+    
+    void set(unsigned i,unsigned j, unsigned val) {
+        mat[i][j]=val;
+    }
+    
+    UnsignedMatrix(unsigned size_x, unsigned size_y)
+    : mat(size_x,std::vector<unsigned>(size_y,0))
+    {}
+          };
 
 //forward declarations
 class vector_heap_mod;
@@ -78,7 +96,7 @@ public:
     the pointwise ranks of the high map in this matrix, and then subtract
     this off of the pointwise nullities. 
     */
-    unsigned_matrix hom_dims;
+    UnsignedMatrix hom_dims;
 
     //Constructor: Builds an empty presentation.
     Presentation();

@@ -71,7 +71,7 @@ public:
     
     //computes xi_0 and xi_1, and also stores dimension of homology at each grade in the supplied matrix
     //This is the orginal RIVET algorithm, based on Koszul homology
-    void compute_koszul(FIRep& fir, unsigned_matrix& hom_dims, Progress& progress);
+    void compute_koszul(FIRep& fir, UnsignedMatrix& hom_dims, Progress& progress);
 
     //Reads the 0th and 1st Betti numbers off of a minimal presentation into the multi_betti object.
     void read_betti(const Presentation & pres);
@@ -81,7 +81,7 @@ public:
     //void compute_non_min_pres(const Presentation & pres, Progress& progress);
     
     //computes xi_2 from the values of xi_0, xi_1 and the dimensions
-    void compute_xi2(unsigned_matrix& hom_dims);
+    void compute_xi2(UnsignedMatrix& hom_dims);
 
     //returns xi_0 at the specified grade
     int xi0(unsigned x, unsigned y);

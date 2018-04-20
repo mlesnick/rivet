@@ -32,6 +32,9 @@
  
 */
 
+//TODO: RIVET also has a struct called Grades.  Perhaps we should rename one of
+//these
+
 #ifndef grade_h
 #define grade_h
 
