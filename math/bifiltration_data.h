@@ -64,8 +64,6 @@
 
 
 //typedefs
-//TODO: It is probably bettter to specify a simplex using a combinatorial
-//number system, as in DIPHA or Ripser.
 typedef std::vector<int> Simplex;
 typedef std::vector<Grade> AppearanceGrades;
 
@@ -80,6 +78,51 @@ struct LowSimplexData {
     }
 };
 
+struct MidSimplexData {
+    Simplex s;
+    
+    //vector of grades of appearance of s
+    AppearanceGrades grades_vec;
+    
+    //Vector of the column indices in the low matrix corresponding to s.
+    //Used to construct high boundary matrix.
+    std::vector<unsigned> col_inds;
+    
+    AppearanceGrades::iterator grades_it;
+    
+    //TODO: Maybe slightly cleaner to use an iterator pointing to col_inds than
+    //an iterator pointing to grades_vec?
+    //std::vector<unsigned>::iterator ind_it;
+    
+    MidSimplexData(Simplex simplex, AppearanceGrades grades)
+    : s(simplex)
+    , grades_vec(grades)
+    , col_inds(std::vector<unsigned>())
+    , grades_it(grades_vec.begin())
+    {
+    }
+};
+
+struct HighSimplexData {
+    Simplex s;
+    
+    //vector of grades of appearance of s
+    AppearanceGrades grades_vec;
+    
+    //TODO: Maybe slightly cleaner to use an iterator pointing to col_ind than an
+    //iterator pointing to grades_vec?
+    //std::vector<unsigned>::iterator ind_it;
+    
+    HighSimplexData(Simplex simplex, AppearanceGrades grades)
+    : s(simplex)
+    , grades_vec(grades)
+    {
+    }
+};
+
+//TODO: Remove this soon.
+//PHASING THIS OUT.
+/*
 struct MidHighSimplexData {
     Simplex s;
     
@@ -117,6 +160,7 @@ struct MidHighSimplexData {
     {
     }
 };
+*/
 
 class BifiltrationData {
     friend class FIRep;
@@ -125,6 +169,10 @@ public:
     
     //constructor
     BifiltrationData(unsigned dim, int verbosity);
+    
+    //tracks whether simplces stored represent a multi_critical filtration.
+    //If false, then construction of FIRep matrices can be optimized.
+
     
     /* 
     build_VR_complex() builds BifiltrationData representing a bifiltered
@@ -209,8 +257,9 @@ private:
     unsigned y_grades;
 
     std::vector<LowSimplexData> low_simplices;
-    std::vector<MidHighSimplexData> mid_simplices, high_simplices;
-
+    std::vector<MidSimplexData> mid_simplices;
+    std::vector<HighSimplexData> high_simplices;
+    
     //recursive function used in build_VR_complex()
     void build_VR_subcomplex(const std::vector<unsigned>& times,
                              const std::vector<unsigned>& distances,
@@ -247,6 +296,7 @@ private:
     //Used to avoid unnecessary resizing of arrays in firep constructor.
     unsigned mid_count;
     unsigned high_count;
+    
 };
 
 #endif // BIFILTRATION_DATA_H

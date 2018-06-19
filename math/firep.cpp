@@ -85,7 +85,7 @@ FIRep::FIRep(BifiltrationData& bif_data, int vbsty)
     
     //mid_gens will store all (mid-simplex,grade_of_appearance) pairs.
     //After sorting, this will index the columns of the low matrix.
-    auto mid_generators = std::vector<MidHiGenIterPair>();
+    auto mid_generators = std::vector<MidGenIterPair>();
     
     //construct the pairs
     mid_generators.reserve(bif_data.mid_count);
@@ -97,7 +97,7 @@ FIRep::FIRep(BifiltrationData& bif_data, int vbsty)
 
             //populate mid_generators with pairs of iterators which specify a
             //simplex and its grade of appearance
-            mid_generators.push_back(MidHiGenIterPair(it, it2));
+            mid_generators.push_back(MidGenIterPair(it, it2));
     }
 
     //stably sort mid_generators according to colex order on grades
@@ -126,7 +126,7 @@ FIRep::FIRep(BifiltrationData& bif_data, int vbsty)
     //First, we need to do more processing of the simplices in dimension hom_dim
 
     //Record the sorted indices of (mid-simplex, grade) pairs in the
-    //MidHighSimplexData structs.
+    //MidSimplexData structs.
     for (unsigned i = 0; i != mid_generators.size(); i++) {
         //this funky line uses the iterator in grades_vec to access the
         //corresponding element in col_inds, and also increments the iterator
@@ -155,20 +155,21 @@ FIRep::FIRep(BifiltrationData& bif_data, int vbsty)
         mid_ht.emplace(&(it->s), it);
     }
 
-    //The following vector will index the columns of the high matrix
-    auto high_generators = std::vector<MidHiGenIterPair>();
-
-    //We know in advance how many columns the high matrix will have.
-    high_generators.reserve(bif_data.high_count +
-                            bif_data.mid_count -
-                            bif_data.mid_simplices.size());
-
+    //This vector will index the columns of the high matrix corresponding to
+    //generators of the high chain module
+    auto high_generators = std::vector<HiGenIterPair>();
+    high_generators.reserve(bif_data.high_count);
+    
+    //This vector will index the columns of the high matrix corresponding to
+    //relations in the mid chain module.
+    auto mid_relations = std::vector<MidGenIterPair>();
+    mid_relations.reserve(bif_data.mid_count - bif_data.mid_simplices.size());
     
     /* 
-    Add the relations to high_generators
+    Add the relations to mid_relations
     Relations will be represented implicity as using two pieces of data:
     1) An AppearanceGrades::iterator it2, where the AppearanceGrades object
-       in question is a member of a MidHighSimplexData Object m.
+       in question is a member of a MidSimplexData Object m.
     2) An iterator it pointing to m in mid_simplices.  The relation represented 
        is the one between *it2 and *(it2+1). 
     */
@@ -181,7 +182,7 @@ FIRep::FIRep(BifiltrationData& bif_data, int vbsty)
              (it2 + 1) != it->grades_vec.end();
              it2++)
         {
-            high_generators.push_back(MidHiGenIterPair(it, it2));
+            mid_relations.push_back(MidGenIterPair(it, it2));
         }
     }
 
@@ -196,14 +197,24 @@ FIRep::FIRep(BifiltrationData& bif_data, int vbsty)
              it2++)
         {
             //populate high_generators with pairs
-            high_generators.push_back(MidHiGenIterPair(it, it2));
+            high_generators.push_back(HiGenIterPair(it, it2));
         }
+    }
+    
+    //We keep track of the sorting of column indices using the following vector
+    std::vector<unsigned> high_col_indices(bif_data.high_count +
+                                           bif_data.mid_count -
+                                           bif_data.mid_simplices.size());
+
+    //populate the vector with entries (0,1,2,3,...).
+    for (unsigned i = 0; i < high_col_indices.size(); i++) {
+        high_col_indices[i]=i;
     }
 
     //Now we've built the list of high_generators, and we need to sort it.
-    std::stable_sort(high_generators.begin(),
-                     high_generators.end(),
-                     [this](auto a,auto b){ return sort_high_gens(a,b); });
+    std::stable_sort(high_col_indices.begin(),
+                     high_col_indices.end(),
+                     [this](auto a,auto b){ return sort_high_gens(a,b,mid_relations,high_generators); });
 
     /*
     Compute the high matrix.  This is more complex than for the low matrix,
@@ -211,12 +222,12 @@ FIRep::FIRep(BifiltrationData& bif_data, int vbsty)
     make a valid choice from among several possible birth grades of a boundary
     simplex. 
     */
-    construct_high_mx(mid_generators,high_generators,bif_data,mid_ht);
+    construct_high_mx(mid_generators,mid_relations,high_generators,bif_data,mid_ht);
 
     //We no longer need mid_simplices or high simplices, so replace with
     //something trivial.
-    std::vector<MidHighSimplexData>().swap(bif_data.mid_simplices);
-    std::vector<MidHighSimplexData>().swap(bif_data.high_simplices);
+    std::vector<MidSimplexData>().swap(bif_data.mid_simplices);
+    std::vector<HighSimplexData>().swap(bif_data.high_simplices);
     
     //Replace hash_table with something trivial.
     SimplexHashMid().swap(mid_ht);

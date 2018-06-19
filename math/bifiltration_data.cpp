@@ -41,6 +41,7 @@ BifiltrationData::BifiltrationData(unsigned dim, int v)
     , y_grades(0)
     , mid_count(0)
     , high_count(0)
+    ,
 {
     if (hom_dim > 5) {
         throw std::runtime_error("BifiltrationData: Dimensions greater than 5 probably don't make sense");
@@ -72,13 +73,13 @@ void BifiltrationData::add_simplex(Simplex const& vertices, const AppearanceGrad
         return;
     } else if (vertices.size() == hom_dim + 1) //simplex of dimension hom_dim
     {
-        mid_simplices.push_back(MidHighSimplexData(vertices, grades, false));
+        mid_simplices.push_back(MidSimplexData(vertices, grades, false));
         mid_count++;
         return;
 
     } else if (vertices.size() == hom_dim + 2) //simplex of dimension hom_dim + 1
     {
-        high_simplices.push_back(MidHighSimplexData(vertices, grades, true));
+        high_simplices.push_back(HighSimplexData(vertices, grades, true));
         high_count++;
         return;
     }
@@ -115,11 +116,11 @@ void BifiltrationData::build_VR_subcomplex(const std::vector<unsigned>& times,
         low_simplices.push_back(LowSimplexData(vertices, Grade(prev_time, prev_dist)));
     } else if (vertices.size() == hom_dim + 1) //simplex of dimension hom_dim - 1
     {
-        mid_simplices.push_back(MidHighSimplexData(vertices, AppearanceGrades(1, Grade(prev_time, prev_dist)), false));
+        mid_simplices.push_back(MidSimplexData(vertices, AppearanceGrades(1, Grade(prev_time, prev_dist))));
         mid_count++;
     } else if (vertices.size() == hom_dim + 2) //simplex of dimension hom_dim - 1
     {
-        high_simplices.push_back(MidHighSimplexData(vertices, AppearanceGrades(1, Grade(prev_time, prev_dist)), true));
+        high_simplices.push_back(HighSimplexData(vertices, AppearanceGrades(1, Grade(prev_time, prev_dist))));
         high_count++;
         return;
     }
@@ -171,7 +172,7 @@ void BifiltrationData::build_DR_complex(const unsigned num_vertices, const std::
     std::vector<AppearanceGrades> vertexMultigrades;
     generateVertexMultigrades(vertexMultigrades, num_vertices, distances, degrees);
     
-    std::vector<int> simplex_indices;
+    Simplex simplex_indices;
     for (unsigned i = 0; i < num_vertices; i++) {
         //Look at simplex with smallest vertex vertex i
         simplex_indices.push_back(i);
@@ -189,7 +190,7 @@ void BifiltrationData::build_DR_complex(const unsigned num_vertices, const std::
     }
 } //end build_DR_complex()
 
-//function to build (recursively) a subcomplex for the DRips complex
+//function to build (recursively) a subcomplex for the Degree-Rips complex
 void BifiltrationData::build_DR_subcomplex(const std::vector<unsigned>& distances, std::vector<int>& parent_vertices, const std::vector<int>& candidates, const AppearanceGrades& parent_grades, const std::vector<AppearanceGrades>& vertexMultigrades)
 {
     //Store the simplex info if it is of dimension (hom_dim - 1), hom_dim, or hom_dim+1. Dimension is parent_vertices.size() - 1
@@ -200,11 +201,11 @@ void BifiltrationData::build_DR_subcomplex(const std::vector<unsigned>& distance
         low_simplices.push_back(LowSimplexData(parent_vertices, Grade((parent_grades.end() - 1)->x, parent_grades.begin()->y)));
     } else if (parent_vertices.size() == hom_dim + 1) //simplex of dimension hom_dim
     {
-        mid_simplices.push_back(MidHighSimplexData(parent_vertices, parent_grades, false));
+        mid_simplices.push_back(MidSimplexData(parent_vertices, parent_grades));
         mid_count += parent_grades.size();
     } else if (parent_vertices.size() == hom_dim + 2) //simplex of dimension hom_dim + 1
     {
-        high_simplices.push_back(MidHighSimplexData(parent_vertices, parent_grades, true));
+        high_simplices.push_back(HighSimplexData(parent_vertices, parent_grades));
         high_count += parent_grades.size();
         return;
     }
@@ -403,7 +404,7 @@ void BifiltrationData::print_bifiltration()
         std::cout << it->gr.x << " " << it->gr.y << std::endl;
     }
 
-    for (std::vector<MidHighSimplexData>::const_iterator it = mid_simplices.begin(); it != mid_simplices.end(); it++) {
+    for (std::vector<MidSimplexData>::const_iterator it = mid_simplices.begin(); it != mid_simplices.end(); it++) {
         for (Simplex::const_iterator it2 = it->s.begin(); it2 != it->s.end(); it2++) {
             std::cout << *it2 << " ";
         }
@@ -414,7 +415,7 @@ void BifiltrationData::print_bifiltration()
         std::cout << std::endl;
     }
 
-    for (std::vector<MidHighSimplexData>::const_iterator it = high_simplices.begin(); it != high_simplices.end(); it++) {
+    for (std::vector<HighSimplexData>::const_iterator it = high_simplices.begin(); it != high_simplices.end(); it++) {
         for (Simplex::const_iterator it2 = it->s.begin(); it2 != it->s.end(); it2++) {
             std::cout << *it2 << " ";
         }

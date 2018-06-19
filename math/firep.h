@@ -142,29 +142,34 @@ private:
     
     //A pair of iterators; first points to a simplex, second points to a grade
     //of appearance of that simplex.
-    typedef std::pair<std::vector<MidHighSimplexData>::iterator, AppearanceGrades::iterator> MidHiGenIterPair;
+    typedef std::pair<std::vector<MidSimplexData>::iterator, AppearanceGrades::iterator> MidGenIterPair;
+    
+    //A pair of iterators; first points to a simplex, second points to a grade
+    //of appearance of that simplex.
+    typedef std::pair<std::vector<HighSimplexData>::iterator, AppearanceGrades::iterator> HiGenIterPair;
+    
     
     //Techinical functions for constructing FIRep from bifiltration data.
     
     //loop through simplices, writing columns to the matrix, and filling in the
     //low IndexMatrix
-    void construct_low_mx(const std::vector<MidHiGenIterPair>& mid_gens,
+    void construct_low_mx(const std::vector<MidGenIterPair>& mid_gens,
                           const BifiltrationData& bif_data,
                           const SimplexHashLow& low_ht);
     
     //construct a column for each (high-simplex, grade-of-appearance) pair,
     //and also a column for each "neighboring bigrade" relation for the
     //mid-simplices.
-    void construct_high_mx(const std::vector<MidHiGenIterPair>& mid_gens,
-                          const std::vector<MidHiGenIterPair>& high_gens,
+    void construct_high_mx(const std::vector<MidGenIterPair>& mid_gens,
+                          const std::vector<HiGenIterPair>& high_gens,
                           const BifiltrationData& bif_data,
                           const SimplexHashMid& mid_ht
                            );
     
-    
+    //TODO : Must be replaced
     //Technical sorting function used to sort the MidHiGenIterPair objects that
     //index the high_matrix.
-    bool sort_high_gens(const MidHiGenIterPair& left, const MidHiGenIterPair& right);
+    //bool sort_high_gens(const MidHiGenIterPair& left, const MidHiGenIterPair& right);
     
 
     //writes boundary, given boundary entries in column col of matrix mat
