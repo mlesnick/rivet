@@ -3,7 +3,7 @@ About
 
 RIVET is a tool for topological data analysis, and more specifically, for the visualization and analysis of two-parameter persistent homology.  RIVET was initially designed with interactive visualization foremost in mind, and this continues to be a central focus.  But RIVET also provides functionality for two-parameter persistence computation that should be useful for other purposes.  
 
-Many of the mathematical and algorithmic ideas behind RIVET are explained in detail in the paper `Interactive Visualization of 2-D Persistence Modules <https://arxiv.org/pdf/1512.00180v1.pdf>`_.  
+Many of the mathematical and algorithmic ideas behind RIVET are explained in detail in the papers `Interactive Visualization of 2-D Persistence Modules <https://arxiv.org/pdf/1512.00180v1.pdf>`_ and `Computing Minimal Presentations and Betti Numbers of 2-Parameter Persistent Homology <https://arxiv.org/abs/1902.05708>`_.  
 Additional papers describing other aspects of RIVET are in preparation.
 
 RIVET is written in C++, and depends on the `Qt <https://www.qt.io/>`_, `Boost <http://www.boost.org/>`_, and `MessagePack <https://msgpack.org/index.html>`_ libraries.  
@@ -14,7 +14,7 @@ A python API for RIVET called `pyrivet <https://github.com/rivetTDA/rivet-python
 Overview
 --------
 
-The basic idea of 2-parameter persistent homology is simple: Given a data set (for example, a point cloud in \\(\\mathbb R^n\\)), one constructs a 2-parameter family of simplicial complexes called a *bifiltration* whose topological structure captures some geometric structure of interest about the data.  For example, the bifiltration may encode information about the presence of clusters, holes, or tendrils in the data.  Applying simplicial homology to the bifiltration gives a diagram of vector spaces called a *bipersistence module*, which algebraically encodes information about the topological structure of the bifiltration.  In contrast to the 1-parameter case, bipersistence modules can have very delicate algebraic structure.  As result, there is (in a sense that can be made precise) no good definition of a barcode for bipersistence modules.
+The basic idea of 2-parameter persistent homology is simple: Given a data set (for example, a point cloud in :math:`\mathbb R^n`, one constructs a 2-parameter family of simplicial complexes called a *bifiltration* whose topological structure captures some geometric structure of interest about the data.  For example, the bifiltration may encode information about the presence of clusters, holes, or tendrils in the data.  Applying simplicial homology to the bifiltration gives a diagram of vector spaces called a *bipersistence module*, which algebraically encodes information about the topological structure of the bifiltration.  In contrast to the 1-parameter case, bipersistence modules can have very delicate algebraic structure.  As result, there is (in a sense that can be made precise) no good definition of a barcode for bipersistence modules.
 
 Nevertheless, one can define invariants of bipersistence modules that capture aspects of their structure relevant for data analysis.  RIVET computes and visualizes three such kinds of invariants, the *Hilbert function*, the *bigraded Betti numbers*, and the *fibered barcode.*  
 
@@ -100,19 +100,12 @@ For convenient citation of RIVET in your own work, we provide the following BibT
 	}
 
 
-
 Documentation Todos
 -------------------
-
-Formatting todos:   
-
-* A lot of displayed math is not displaying properly on the .pdf provided by read the docs.
-* The caption for the figure on the "Computation Pipeline" page does not display properly in the downloaded .html. MW: It seems that the downloaded HTML is using a slightly different style sheet than the online version. However, nearly everyone will use the online version rather than downloading a zip archive containing all of the HTML and supporting files.
 
 Content Todos:  
 
 * The descussion of the Persistence Diagram Window has now been updated to reflect the recent improvements to the visualization.  However, some details about how the persistence diagram is drawn appear in the appendix of the arXiv paper, but not in the documentation.  For example, the way we handle normalization when "fit to window" is selected is only discussed in the appendix.  I suggest that all details be given in the documentation and removed from the paper.
-* I suggest to not print out xi_0, xi_1, and xi_2 when —Betti is called.
 * The example could use some polish. More examples are desirable.
 
 Minor Todos:  
@@ -120,4 +113,4 @@ Minor Todos:
 * It's a small thing, but the .png of the the file input dialog looks a little off center.
 * The FAQ section has been removed from the documentation, but the .rst file is still in the repository in case we want to reintroduce this.
 
-   
+
