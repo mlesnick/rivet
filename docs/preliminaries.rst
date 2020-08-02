@@ -1,3 +1,6 @@
+.. _preliminaries:
+
+
 Mathematical Preliminaries
 ==========================
 To prepare for a detailed explaination of what RIVET can do and how it is used, we review some basic mathematical notions and establish some terminology.
@@ -10,7 +13,9 @@ A *bifiltration* :math:`F` is a collection of finite simplicial complexes indexe
 
 We next introduce two contructions of bifiltrations from data.
 
-Function-Rips Bifiltraiton
+.. _funRipsBifil:
+
+Function-Rips Bifiltration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 For :math:`P` a finite metric space and :math:`r\geq 0`, let :math:`N(P)_r` denote the :math:`r`-neighborhood graph of :math:`P`, i.e., the vertex set of :math:`N(P)_r` is :math:`P`, and edge :math:`[i,j]\in N(P)_r` if and only if :math:`d(i,j)\leq r`.  If :math:`r<0`, we define :math:`N(P):=\emptyset.`  We define the *Vietoris-Rips complex* :math:`R(P)_r` to be the clique complex on :math:`N(P)_r`, i.e. the largest simplical complex with 1-skeleton :math:`N(P)_r`.
 
@@ -24,7 +29,37 @@ Given a finite metric space :math:`P` and any function :math:`\gamma:P\to \mathb
 
 :math:`FR(\gamma)` is always 1-critical.
 
-:math:`\gamma` is often chosen to be a density estimate on :math:`P`.  Another common choice is to take :math:`\gamma` to be a coeccentricity function on :math:`P`, e.g., :math:`\gamma(x):= \sum_{y\in P} d(x,y)`.
+We mention three natural choices of :math:`\gamma`, each of which is implemented in RIVET:
+
+* A **ball density function**, defined by 
+
+.. math::
+   :nowrap:
+   
+   \[\gamma(x)=C[\# \text{ points in } P \text{ within distance }r \text{ of }x],\]
+
+where :math:`r>0` is a fixed parameter, the "radius", and :math:`C` is a normalization constant, chosen so that :math:`\sum_{x\in P} \gamma(x)=1`.  
+
+* A **Gaussian density function**, given by 
+
+.. math::
+   :nowrap:
+
+   \[\gamma(x)=C\sum_{y\in P} e^{\frac{-d(x,y)^2}{2\sigma}},\]
+
+where :math:`\sigma>0` is a parameter, the "standard deviation," and :math:`C` is a normalization constant.
+
+* An **eccentricity function**, i.e.,
+
+.. math::
+   :nowrap:
+
+   \[\gamma(x):= \left(\frac{\sum_{y\in P} d(x,y)^q}{|P|}\right)^{\frac{1}{q}},\]
+where :math:`q\in [1,\infty)` is a parameter.
+
+ 
+
+.. _degreeRipsBifil:
 
 Degree-Rips Bifiltration
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -120,6 +155,8 @@ As mentioned above, RIVET computes and visualizes three simple invariants of a b
    \[0 \to F^2\to F^1\to F^0\]
 
 for :math:`M`, :math:`\xi_i^M(r)` is the number of elements at bigrade :math:`r` in a basis for :math:`F^i`.
+
+.. _coarsening:
 
 Coarsening a Persistence Module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

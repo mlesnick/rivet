@@ -14,11 +14,11 @@ RIVET Documentation
    installing    
    preliminaries
    pipeline		
-   running
-   inputdata   
+   gettingstarted
    visualization
-   example
-
+   rivetconsole
+   inputdata
+   
 
 Indices and tables
 ==================
