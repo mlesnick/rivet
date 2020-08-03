@@ -27,8 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 DistanceMatrix::DistanceMatrix(InputParameters& params, int np)
     : input_params(params)
-    , max_dist(input_params.max_dist)
     , num_points(np)
+    , max_dist(input_params.max_dist)
     , dimension(input_params.dimension)
     , filtration(input_params.bifil)
     , func_type(input_params.function_type)
@@ -288,7 +288,7 @@ void DistanceMatrix::build_distance_matrix(std::vector<DataPoint>& points)
                 cur_dist = approx(sqrt(fp_dist_squared)); //OK for now...
 
             //store distance value, if it doesn't exist already
-            ret = dist_set.insert(ExactValue(cur_dist));
+            ret = dist_set.insert(ExactValue(cur_dist/2));
 
             //remember that the pair of points (i,j) has this distance value, which will go in entry j(j-1)/2 + i + 1
             (ret.first)->indexes.push_back((j * (j - 1)) / 2 + i + 1);
@@ -339,8 +339,9 @@ void DistanceMatrix::build_all_vectors(InputData* data)
 
         //build vector of discrete degree indices from 0 to max_degree and bins those degree values
         //WARNING: assumes that the number of distinct degree grades will be equal to max_degree which may not hold
+        //Mike: I'm not sure who wrote this warning, but I'd imagine that the worst thing that can happen is that RIVET stores extra bigrades.
         for (unsigned i = 0; i <= max_degree; i++) {
-            ret = degree_set.insert(ExactValue(max_degree - i)); //store degree -i because degree is wrt opposite ordering on R
+            ret = degree_set.insert(ExactValue(exact((1+max_degree - i),num_points)));
             (ret.first)->indexes.push_back(i); //degree i is stored at index i
         }
         //make degrees
@@ -412,9 +413,9 @@ void DistanceMatrix::read_distance_matrix(std::vector<exact>& values)
                     std::string str = tokens[j - i - 1];
 
                     exact cur_dist = str_to_exact(str);
-
+                    
                     //store distance value, if it doesn't exist already
-                    ret = dist_set.insert(ExactValue(cur_dist));
+                    ret = dist_set.insert(ExactValue(cur_dist/2));
 
                     //remember that the pair of points (i,j) has this distance value, which will go in entry j(j-1)/2 + i + 1
                     (ret.first)->indexes.push_back((j * (j - 1)) / 2 + i + 1);

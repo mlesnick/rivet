@@ -189,8 +189,12 @@ FileContent DataReader::read_point_cloud(std::ifstream& stream, Progress& progre
     }
 
     // force set parameters here
+    //TODO: This shouldn't be here, as the x_label "degree" is being set somewhere else earlier.
+    //The corrected label should be set there.
+    //It is not being set in input_manager.cpp, as expected,
+    //I don't have time to track it down now.
     if (input_params.bifil == "degree") {
-        input_params.x_label = "degree";
+        input_params.x_label = "(degree+1)/(# of points)";
         input_params.x_reverse = true;
     }
 
@@ -330,8 +334,8 @@ FileContent DataReader::read_point_cloud(std::ifstream& stream, Progress& progre
     if (input_params.bifil == "degree") {
         data->bifiltration_data->build_DR_complex(num_points, dist_mat.dist_indexes, dist_mat.degree_indexes, data->x_exact.size(), data->y_exact.size());
         //convert data->x_exact from codegree sequence to negative degree sequence
-        exact max_x_exact = *(data->x_exact.end() - 1); //should it be max_degree instead?
-        std::transform(data->x_exact.begin(), data->x_exact.end(), data->x_exact.begin(), [max_x_exact](exact x) { return x - max_x_exact; });
+        std::reverse(data->x_exact.begin(), data->x_exact.end());
+        std::transform(data->x_exact.begin(), data->x_exact.end(), data->x_exact.begin(), [](exact x) { return -1*x; });
 
     } else {
         data->bifiltration_data->build_VR_complex(dist_mat.function_indexes, dist_mat.dist_indexes, data->x_exact.size(), data->y_exact.size());
@@ -379,6 +383,16 @@ FileContent DataReader::read_discrete_metric_space(std::ifstream& stream, Progre
     else
         hasFunction = false;
 
+    // force set parameters here
+    //TODO: This shouldn't be here, as the x_label "degree" is being set somewhere else earlier.
+    //The corrected label should be set there.
+    //It is not being set in input_manager.cpp, as expected,
+    //I don't have time to track it down now.
+    if (input_params.bifil == "degree") {
+        input_params.x_label = "(degree+1)/(# of points)";
+        input_params.x_reverse = true;
+    }
+    
     bool x_reverse = input_params.x_reverse;
     bool y_reverse = input_params.y_reverse;
 
@@ -489,8 +503,8 @@ FileContent DataReader::read_discrete_metric_space(std::ifstream& stream, Progre
         data->bifiltration_data->build_DR_complex(num_points, dist_mat.dist_indexes, dist_mat.degree_indexes, data->x_exact.size(), data->y_exact.size());
 
         //convert data->x_exact from codegree sequence to negative degree sequence
-        exact max_x_exact = *(data->x_exact.end() - 1); //should it be max_degree instead?
-        std::transform(data->x_exact.begin(), data->x_exact.end(), data->x_exact.begin(), [max_x_exact](exact x) { return x - max_x_exact; });
+        std::reverse(data->x_exact.begin(), data->x_exact.end());
+        std::transform(data->x_exact.begin(), data->x_exact.end(), data->x_exact.begin(), [](exact x) { return -1*x; });
     } else {
         data->bifiltration_data->build_VR_complex(dist_mat.function_indexes, dist_mat.dist_indexes, data->x_exact.size(), data->y_exact.size());
     }
