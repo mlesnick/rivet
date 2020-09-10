@@ -54,6 +54,17 @@ std::unique_ptr<ComputationResult> Computation::compute_raw(ComputationInput& in
                 debug() << "; values " << input.y_exact.front() << " to " << input.y_exact.back();
             }
         }
+        
+        if (verbosity >= 6) {
+            std::cout << "x-grades:" << std::endl;
+            for(int i=0; i < input.x_exact.size(); i++){
+                std::cout << input.x_exact.at(i) << std::endl;
+            }
+            std::cout << "y-grades:" << std::endl;
+            for(int i=0; i < input.y_exact.size(); i++){
+                std::cout << input.y_exact.at(i) << std::endl;
+            }
+        }
     }
 
     //STAGE 3: COMPUTE MINIMAL PRESENTATION AND MULTIGRADED BETTI NUMBERS

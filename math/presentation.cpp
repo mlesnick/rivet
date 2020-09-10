@@ -251,6 +251,17 @@ void Presentation::kernel_coordinates(BigradedMatrixLex& high_mat,
      each column of high_mat with respect to the columns of the kernel, and 
      place the resulting values into mat. note that columns of high_mat are 
      initially in lex order.
+     
+     ADDED LATER: The minimization procedure is indifferent to whether the
+     the column bigrades of the presentation matrix are in colex order.  It is
+     only required that the order be compatible with the total order on R^2.
+     So for minimization, it was not necessary to convert to the colex order.
+     In any case, this doesn't seem to really matter from an efficiency
+     standpoint.
+     Right now, I don't remember if having the columns of the minimal
+     presentation in colex order is convenient for RIVET's barcode template
+     computation.
+     
     */
     for (unsigned y = 0; y < high_mat.ind.height(); y++) {
         for (unsigned x = 0; x < high_mat.ind.width(); x++) {
