@@ -3,7 +3,7 @@
 Input Data Files
 ================
 
-As explained in :ref:`runningRIVET`, RIVET requires an *input data file*.  
+As explained in :ref:`rivetconsole`, RIVET requires an *input data file*.  
 
 Starting with version 1.1 (released in 2020), the format for input data files has been redesigned to be more flexible; this page describes the new format.  [RIVET still supports the older, less-flexible input file formats required by RIVET 1.0; details about these can be found in ":ref:`oldInputData`".  However, the use of the old input formats is discouraged, and support may be discontinued in future versions of RIVET.]
 
@@ -18,9 +18,9 @@ RIVET accepts six types of input data files; the flag :code:`--datatype` tells R
 
 (Observe that these are exactly the objects in green boxes in the figure in the “:ref:`structure`” section of this documentation.)
 
-If the flag :code:`--datatype` is not given, RIVET uses the default value of :code:`points`.  As noted in :ref:`runningRIVET`, any of the command-line flags described in :ref:`_flags` can be placed either in an input data file or given directly on the command line, and this is true in particular for the flag :code:`--datatype`.
+If the flag :code:`--datatype` is not given, RIVET uses the default value of :code:`points`.  As noted in :ref:`rivetconsole`, any of the command-line flags described in :ref:`flags` can be placed either in an input data file or given directly on the command line, and this is true in particular for the flag :code:`--datatype`.
 
-In general, flags in the input data file must be provided in the top lines of the file, before the data is given and as noted in :ref:`runningRIVET`,[REMOVE THIS] flags provided to **rivet_console** override those given in the input file.  [MUST EACH FLAG APPEAR ON ITS OWN LINE?].  
+In general, flags in the input data file must be provided in the top lines of the file, one flag per line, before the data is given. As noted in :ref:`flags`, flags provided to **rivet_console** override those given in the input file. 
 
 RIVET ignores lines in an input data file that begin with the symbol `#`; such lines may be used for comments.  Blank lines are also ignored.
 
@@ -229,9 +229,9 @@ An FIRep
 is specified in the following format:
 
 * Following any flags, the first line must be of the form ``t s r``, where ``t``, ``s``, and ``r`` are, repsectively, the ranks of :math:`C_2`, :math:`C_1`, and :math:`C_0`.
-* Each of the next ``t`` lines specifies the bigrade of appearance of a basis element for :math:`C_2`, together with the corresponding column of the matrix representing :math:`f`: the format for such a line is: ``x y ; b1 b2 b3``, where the ``bi`` are the row indices of nonzero column entries.  (Recall that we work with :math:`\mathbb{Z}/2\mathbb{Z}` coefficients.) 
+* Each of the next ``t`` lines specifies the bigrade of appearance of a basis element for :math:`C_2`, together with the corresponding column of the matrix representing :math:`f`.  The format for such a line is (e.g. if the column has three non-zero entries): ``x y ; b1 b2 b3``, where (x,y) is the bigrade and the ``bi`` are the row indices of nonzero column entries.  (Recall that we work with :math:`\mathbb{Z}/2\mathbb{Z}` coefficients.) 
 * Each of the next ``s`` lines specifies the bigrade of appearance of a basis element for :math:`C_1`, together with the corresponding column of the matrix representing :math:`g`.
-   
+ 
 As with the Bifiltration input format, the user must ensure that the input file specifies a valid FIRep.  [Does this need to be capitalized?]
 
 Flag Usage:
